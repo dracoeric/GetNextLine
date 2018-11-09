@@ -6,7 +6,7 @@
 #    By: erli <marvin@42.fr>                        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/11/06 16:17:09 by erli              #+#    #+#              #
-#    Updated: 2018/11/09 16:12:10 by erli             ###   ########.fr        #
+#    Updated: 2018/11/09 17:07:54 by erli             ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -88,16 +88,18 @@ OBJS	=	$(SRCS:.c=.o)
 
 CC		=	gcc
 
-CFLAG 	=	-Wall -Werror -Wextra
+CFLAG 	=	-Wall -Werror -Wextra 
+
+INCL	=	-I includes
 
 
 all		: $(NAME)
 
-$(NAME)	:	$(OBJS) ./libft.h
+$(NAME)	:	$(OBJS)
 		ar rc $(NAME) $(OBJS)
 
 %.o		: %.c
-		$(CC) -o $@ -c $< $(CFLAG)
+		$(CC) -o $@ -c $< $(CFLAG) $(INCL)
 
 delsav	:
 		rm -f *~
