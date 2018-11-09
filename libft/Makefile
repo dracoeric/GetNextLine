@@ -6,7 +6,7 @@
 #    By: erli <marvin@42.fr>                        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/11/06 16:17:09 by erli              #+#    #+#              #
-#    Updated: 2018/11/09 17:07:54 by erli             ###   ########.fr        #
+#    Updated: 2018/11/09 17:21:45 by erli             ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -95,7 +95,7 @@ INCL	=	-I includes
 
 all		: $(NAME)
 
-$(NAME)	:	$(OBJS)
+$(NAME)	:	$(OBJS) includes/libft.h
 		ar rc $(NAME) $(OBJS)
 
 %.o		: %.c
