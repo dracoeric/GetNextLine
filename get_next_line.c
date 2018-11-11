@@ -6,7 +6,7 @@
 /*   By: erli <erli@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/10 16:43:47 by erli              #+#    #+#             */
-/*   Updated: 2018/11/10 19:26:33 by erli             ###   ########.fr       */
+/*   Updated: 2018/11/11 14:51:12 by erli             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,63 +15,113 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-t_bookmark	*new_bm(const int	fd)
+t_bookmark	*bm_new(const int	fd)
 {
 	t_bookmark	*new;
-	char		*line_buf;
+	char		*last_buf;
 
 	if (!(new = (t_bookmark *)malloc(sizeof(t_bookmark))))
 		return (0);
-	if (!(line_buf = (char *)malloc(sizeof(char) * (BUFF_SIZE + 1))))
+	if (!(last_buf = (char *)malloc(sizeof(char) * (BUFF_SIZE + 1))))
 		return (0);
-	ft_bzero(line_buf, (BUFF_SIZE + 1));
+	ft_bzero(last_buf, (BUFF_SIZE + 1));
 	new->file_descriptor = fd;
-	new->line_buf = line_buf;
+	new->last_buf = last_buf;
 	new->next = 0;
 	return (new);
 }
 
-char		*get_bm_line(t_bookmark **list, const int fd)
+t_bookmark		*bm_get(t_bookmark **list, const int fd)
 {
-	t_bookmark	*head;
+	t_bookmark	*bubble;
 	t_bookmark	*new;
 
 	if (list == 0)
 	{
 		if (!(list = (t_bookmark **)malloc(sizeof(t_bookmark *))))
 			return (0);
-		*list = new_bm(fd);
-		return ((*list)->line_buf);
+		*list = 0;
 	}
-	head = *list;
-	while (*list != 0)
+	bubble = *list;
+	while (bubble != 0)
 	{
-		if ((*list)->file_descriptor == fd)
-			return ((*list)->line_buf);	
-		*list = (*list)->next;
+		if (bubble->file_descriptor == fd)
+			return (bubble);	
+		bubble = bubble->next;
 	}
-	new = new_bm(fd);
-	new->next = head;
+	new = bm_new(fd);
+	new->next = *list;
 	*list = new;
-	return (new->line_buf);
+	return (new);
 }
 
-void		store_bm(t_bookmark *list, const int fd, char* line_buf)
+void		bm_free(t_bookmark **list, const int fd)
 {
-	if (list == 0 && fd == 0 && line_buf == 0)
-		ft_putchar('c');
+	t_bookmark	*prev;
+	t_bookmark	*target;
+
+	if (list != NULL && *list != NULL)
+	{
+		prev = *list;
+		target = prev->next;
+		while (target != NULL && target->file_descriptor != fd)
+		{
+			prev = target;
+			target = target->next;
+		}
+		if (target != NULL)
+		{
+			prev->next = target->next;
+			free(target->last_buf);
+			free(target);
+		}
+	}
+}
+
+int			read_line(const int fd, char **line, t_bookmark *bm)
+{
+	char 	buf[BUFF_SIZE + 1];
+	int		ret;
+	char	str_add[BUFF_SIZE + 1];
+	void	*ptr;
+
+	ret = BUFF_SIZE;
+	ptr = NULL;
+	*line = ft_strtrim(bm->last_buf);
+	while (ptr == NULL && ret == BUFF_SIZE)
+	{
+		ft_bzero(buf, BUFF_SIZE + 1);
+		ft_bzero(str_add, BUFF_SIZE + 1);
+		ret = read(fd, buf, BUFF_SIZE);
+		ptr = memccpy(str_add, buf, 10, BUFF_SIZE);
+		free(*line);
+		*line = ft_strjoin(*line, str_add);
+	}
+	if (ret < BUFF_SIZE)
+		return (0);
+	if (ptr != NULL)
+		bm->last_buf = ft_strncpy(bm->last_buf, (char *)ptr, BUFF_SIZE + 1);
+	if (bm->last_buf[0] == '\0')
+		return (read(fd, bm->last_buf, 1));
+	return (1);	
 }
 
 int			get_next_line(const int fd, char **line)
 {
-	char				buf[BUFF_SIZE +1];
-	char				*line_buf;
-	int					ret;
+	t_bookmark			*bm;
 	static	t_bookmark	*bmlist = 0;
+	int					read_out;
 
 	if (line == 0)
 		return (-1);
-	line_buf = get_bm_line(&bmlist, fd);
-	
-	
+	*line = 0;
+	bm = bm_get(&bmlist, fd);
+	if (fd < 0)
+		return (-1);
+	if (fd <= 1)
+		ft_bzero(bm->last_buf, BUFF_SIZE + 1);
+	read_out = read_line(fd, line, bm);
+	if (read_out == 0)
+		bm_free(&bmlist, fd);
+	return (read_out);
 }
