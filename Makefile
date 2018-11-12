@@ -6,7 +6,7 @@
 #    By: erli <erli@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/11/10 16:32:36 by erli              #+#    #+#              #
-#    Updated: 2018/11/10 17:31:12 by erli             ###   ########.fr        #
+#    Updated: 2018/11/12 11:10:29 by erli             ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -29,10 +29,10 @@ LIB		=	libft/ -lft
 all		:	$(NAME)
 
 $(NAME)	:	$(OBJS) get_next_line.h
-			$(CC) -o $(NAME) $(OBJS) $(CFLAG) -L $(LIB)
+			$(CC) -o $(NAME) $(OBJS) $(CFLAG) $(INCL) -L $(LIB)
 
 %.o		:	%.c
-			$(CC) -o $@ -c $< $(CFLAG) $(INCL) -L $(LIB)
+			$(CC) -o $@ -c $< $(CFLAG) $(INCL)
 
 clean	:
 			rm -f *.o
