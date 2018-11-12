@@ -6,7 +6,7 @@
 /*   By: erli <erli@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/10 16:43:47 by erli              #+#    #+#             */
-/*   Updated: 2018/11/12 16:47:34 by erli             ###   ########.fr       */
+/*   Updated: 2018/11/12 18:03:55 by erli             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,14 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include <stdio.h>
+void			add_to_line(char **line, char *str_add)
+{
+	char *old;
+
+	old = *line;
+	*line = ft_strjoin(*line, str_add);
+	free(old);
+}
 
 t_bookmark		*bm_get(t_bookmark **list, const int fd)
 {
@@ -73,7 +80,6 @@ int				read_line(const int fd, char **line, t_bookmark *bm, char *buf)
 	int		ret;
 	char	str_add[BUFF_SIZE + 1];
 	int		first_read;
-	char	*old;
 
 	ret = BUFF_SIZE;
 	first_read = 1;
@@ -88,14 +94,13 @@ int				read_line(const int fd, char **line, t_bookmark *bm, char *buf)
 			*line = ft_strdup(bm->last_buf);
 		first_read = 0;
 		ft_memccpy(str_add, buf, 10, BUFF_SIZE);
-		old = *line;
-		*line = ft_strjoin(*line, str_add);
-		free(old);
+		add_to_line(line, str_add);
 	}
 	if (ft_strchr(buf, 10) != NULL)
 		buf = ft_strncpy(buf, ft_strchr(buf, 10) + 1, BUFF_SIZE);
 	else if (ft_strchr(buf, 0) != buf + BUFF_SIZE)
 		ft_bzero(buf, BUFF_SIZE + 1);
+	bm->last_buf = ft_strncpy(bm->last_buf, buf, BUFF_SIZE + 1);
 	return (1);
 }
 
@@ -105,7 +110,7 @@ int				get_next_line(const int fd, char **line)
 	static	t_bookmark	*bmlist = 0;
 	char				buf[BUFF_SIZE + 1];
 
-	if (line == 0 || fd < 0)
+	if (line == 0 || fd < 0 || read(fd, buf, 0) == -1)
 		return (-1);
 	bm = bm_get(&bmlist, fd);
 	ft_bzero(buf, BUFF_SIZE + 1);
@@ -121,8 +126,6 @@ int				get_next_line(const int fd, char **line)
 		bm_free(&bmlist, fd);
 		return (0);
 	}
-	else
-		bm->last_buf = ft_strncpy(bm->last_buf, buf, BUFF_SIZE + 1);
 	if (ft_strchr(*line, 10) != NULL)
 		*ft_strchr(*line, 10) = '\0';
 	return (1);
