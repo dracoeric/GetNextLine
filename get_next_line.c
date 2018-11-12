@@ -6,7 +6,7 @@
 /*   By: erli <erli@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/10 16:43:47 by erli              #+#    #+#             */
-/*   Updated: 2018/11/11 14:51:12 by erli             ###   ########.fr       */
+/*   Updated: 2018/11/12 09:24:53 by erli             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-t_bookmark	*bm_new(const int	fd)
+t_bookmark		*bm_new(const int fd)
 {
 	t_bookmark	*new;
 	char		*last_buf;
@@ -46,7 +46,7 @@ t_bookmark		*bm_get(t_bookmark **list, const int fd)
 	while (bubble != 0)
 	{
 		if (bubble->file_descriptor == fd)
-			return (bubble);	
+			return (bubble);
 		bubble = bubble->next;
 	}
 	new = bm_new(fd);
@@ -55,7 +55,7 @@ t_bookmark		*bm_get(t_bookmark **list, const int fd)
 	return (new);
 }
 
-void		bm_free(t_bookmark **list, const int fd)
+void			bm_free(t_bookmark **list, const int fd)
 {
 	t_bookmark	*prev;
 	t_bookmark	*target;
@@ -78,9 +78,9 @@ void		bm_free(t_bookmark **list, const int fd)
 	}
 }
 
-int			read_line(const int fd, char **line, t_bookmark *bm)
+int				read_line(const int fd, char **line, t_bookmark *bm)
 {
-	char 	buf[BUFF_SIZE + 1];
+	char	buf[BUFF_SIZE + 1];
 	int		ret;
 	char	str_add[BUFF_SIZE + 1];
 	void	*ptr;
@@ -103,10 +103,10 @@ int			read_line(const int fd, char **line, t_bookmark *bm)
 		bm->last_buf = ft_strncpy(bm->last_buf, (char *)ptr, BUFF_SIZE + 1);
 	if (bm->last_buf[0] == '\0')
 		return (read(fd, bm->last_buf, 1));
-	return (1);	
+	return (1);
 }
 
-int			get_next_line(const int fd, char **line)
+int				get_next_line(const int fd, char **line)
 {
 	t_bookmark			*bm;
 	static	t_bookmark	*bmlist = 0;

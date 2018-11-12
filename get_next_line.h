@@ -6,14 +6,14 @@
 /*   By: erli <erli@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/10 16:42:05 by erli              #+#    #+#             */
-/*   Updated: 2018/11/11 14:21:18 by erli             ###   ########.fr       */
+/*   Updated: 2018/11/12 09:26:16 by erli             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
-# define	GET_NEXT_LINE_H
+# define GET_NEXT_LINE_H
 
-# define	BUFF_SIZE 40
+# define BUFF_SIZE 40
 
 typedef	struct	s_bookmark
 {
@@ -22,6 +22,6 @@ typedef	struct	s_bookmark
 	struct s_bookmark	*next;
 }				t_bookmark;
 
-int		get_next_line(const int fd, char **line);
+int				get_next_line(const int fd, char **line);
 
 #endif
