@@ -6,7 +6,7 @@
 /*   By: erli <erli@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/10 16:46:15 by erli              #+#    #+#             */
-/*   Updated: 2018/11/12 17:38:17 by erli             ###   ########.fr       */
+/*   Updated: 2018/11/13 11:28:30 by erli             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,54 +19,109 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-int		main(int argc, char **argv)
+int		main(void)
 {
 	char	*line;
-	int		*fd;
+	int		fd1;
+	int		fd2;
+	int		fd3;
 	int		i;
-	int		over;
-	int		count;
+	int		read;
 
-	line = NULL;
-	i = 1;
-	count = 0;
-	if (argc >= 2)
+	line = 0;
+	i = 0;
+	read = 1;
+	puts("\n---=== Test de GetNextLine sur stdin ===---");
+	while (i < 4)
 	{
-		fd = (int *)malloc(sizeof(int) * (argc - 1));
-		while (i < argc)
+		printf("Essaie %d: (entrer une ligne)\n", i);
+		if (get_next_line(0, &line) == 1)
 		{
-			fd[i] = open(argv[i], O_RDONLY);
-			i++;
-		};
-		over = 1;
-		while (over != 0)
-		{
-			i = 1;
-			while (i < argc)
-			{
-				over = get_next_line(fd[i], &line);
-				if (over != 0)
-				{	
-					ft_putstr(line);
-					free(line);
-					ft_putchar('\n');
-				}
-				i++;
-			}
+			printf("GNL donne:\n%s\n",line);
+			free(line);
 		}
-		i = 1;
-		while (i < argc)
+		i++;
+	}
+	
+	puts("\n---=== Test de GetNextLine sur un fichier ===---");
+	fd1 = open("./test1.txt", O_RDONLY);
+	while (read > 0)
+	{
+		read = get_next_line(fd1, &line);
+		if (read == 1)
 		{
-			close(fd[i]);
-			i++;
+			printf("GNL donne:\n%s\n",line);
+			free(line);
 		}
 	}
-/*	while ((over = get_next_line(0, &line)))
+
+	close(fd1);
+
+	puts("\n---=== Test de GetNextLine sur un fd invalide ===---");
+	printf("GNL = %d\n", get_next_line(fd1, &line));
+
+	puts("\n---=== Test de GetNextLine sur trois fichier ===---");
+	fd1 = open("test1.txt", O_RDONLY);
+	fd2 = open("test2.txt", O_RDONLY);
+	fd3 = open("test3.txt", O_RDONLY);
+	if (get_next_line(fd1, &line))
 	{
-		printf("ret = %d\n", over);
-		ft_putstr(line);
+		printf("GNL de fd1 donne:\n%s\n", line);
 		free(line);
-		ft_putchar('\n');
-	}*/
+	}
+	if (get_next_line(fd1, &line))
+	{
+		printf("GNL de fd1 donne:\n%s\n", line);
+		free(line);
+	}
+	if (get_next_line(fd2, &line))
+	{
+		printf("GNL de fd2 donne:\n%s\n", line);
+		free(line);
+	}
+	if (get_next_line(fd1, &line))
+	{
+		printf("GNL de fd1 donne:\n%s\n", line);
+		free(line);
+	}
+	if (get_next_line(fd3, &line))
+	{
+		printf("GNL de fd3 donne:\n%s\n", line);
+		free(line);
+	}
+	if (get_next_line(fd3, &line))
+	{
+		printf("GNL de fd3 donne:\n%s\n", line);
+		free(line);
+	}
+	if (get_next_line(fd2, &line))
+	{
+		printf("GNL de fd2 donne:\n%s\n", line);
+		free(line);
+	}
+	if (get_next_line(fd2, &line))
+	{
+		printf("GNL de fd2 donne:\n%s\n", line);
+		free(line);
+	}
+	if (get_next_line(fd1, &line))
+	{
+		printf("GNL de fd1 donne:\n%s\n", line);
+		free(line);
+	}
+	if (get_next_line(fd3, &line))
+	{
+		printf("GNL de fd3 donne:\n%s\n", line);
+		free(line);
+	}
+	if (get_next_line(fd1, &line))
+	{
+		printf("GNL de fd1 donne:\n%s\n", line);
+		free(line);
+	}
+	close(fd1);
+	close(fd2);
+	close(fd3);
+	
 	return (0);
 }
