@@ -6,7 +6,7 @@
 /*   By: erli <erli@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/10 16:43:47 by erli              #+#    #+#             */
-/*   Updated: 2018/11/13 10:52:35 by erli             ###   ########.fr       */
+/*   Updated: 2018/11/14 13:52:10 by erli             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ int				read_line(const int fd, char **line, t_bookmark *bm, char *buf)
 		if (ret == 0 && first_read == 1 && bm->last_buf[0] == '\0')
 			return (0);
 		ft_memccpy(str_add, buf, 10, BUFF_SIZE);
-		if (!(add_to_line(line, str_add, bm, first_read)))
+		if (ret < 0 || !(add_to_line(line, str_add, bm, first_read)))
 			return (-1);
 		first_read = 0;
 	}
